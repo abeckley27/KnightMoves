@@ -7,6 +7,7 @@ public:
 	Node<T>* ptr[8];
 	T value;
 	int num_edges;
+	int ID;
 };
 
 class square {
@@ -26,7 +27,11 @@ void extend_node(Node<square>& node_) {
 	}
 }
 
-void print_node(Node<square>& n) {
-	std::cout << '(' << n.value.row << ", " << n.value.col << ")\n";
-	std::cout << n.num_edges << " possible moves from here\n";
+void print_node(Node<square>* n) {
+	std::cout << "Node ID: " << n->ID << "\t(" << n->value.row << ", " << n->value.col << ")\n";
+	std::cout << n->num_edges << " possible moves from here\n";
+}
+
+void print_graph(Node<square>* head) {
+	print_node(head);
 }
