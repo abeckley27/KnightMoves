@@ -16,22 +16,18 @@ public:
 	square(int r_, int c_) { row = r_; col = c_; }
 	int row;
 	int col;
+
+	bool operator==(const square& sq);
 };
 
-void extend_node(Node<square>& node_) {
-
-	// Check to make sure the square has been initialized
-	if (node_.value.col >= 0 && node_.value.row >= 0) {
-		int x1 = node_.value.row - 1;
-		int y1 = node_.value.col - 2;
-	}
+bool square::operator==(const square& sq)
+{
+	return (row == sq.row) && (col == sq.col);
 }
+
 
 void print_node(Node<square>* n) {
 	std::cout << "Node ID: " << n->ID << "\t(" << n->value.row << ", " << n->value.col << ")\n";
 	std::cout << n->num_edges << " possible moves from here\n";
 }
 
-void print_graph(Node<square>* head) {
-	print_node(head);
-}
