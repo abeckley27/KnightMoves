@@ -8,10 +8,6 @@ int is_in_graph(square& sq, const std::vector<void*>& IDlist) {
 	Node<square>* nptr_i = NULL;
 	for (int i = 0; i < IDlist.size(); i++) {
 		nptr_i = (Node<square>*)IDlist[i];
-		//print_node(nptr_i);
-		//print_node(nodeptr);
-		//std::cout << (nptr_i->value == nodeptr->value) << std::endl;
-		//std::cin.get();
 		if (nptr_i->value == sq) {
 			output = i;
 		}
@@ -68,36 +64,45 @@ int main(int argc, char* argv[]) {
 
 	//Set up the node for the (1, 2) square
 	Node<square>* vertexptr = head.ptr[0];
+	int ptrID = vertexptr->ID;
 	vertexptr->num_edges = 0;
-	int r = vertexptr->value.row;
-	int c = vertexptr->value.col;
-	int newx, newy;
 
-	//Iterate through the possible moves
-	for (i = 0; i < 8; i++) {
-		newx = r + moves[i].x;
-		newy = c + moves[i].y;
-		
-		if (newx >= 0 && newy >= 0 && newx <= 7 && newy <= 7) { 
-			square s1(newx, newy);
-			int x1 = is_in_graph(s1, vertexID);
+	// temporary hack to prevent infinite loop
+	int count = 0;
+	while (count < 2) {
+		int r = vertexptr->value.row;
+		int c = vertexptr->value.col;
+		int newx, newy;
 
-			//std::cout << x1 << std::endl;
-			
-			if (x1 >= 0) {
-				// If the square is already in the graph, add a pointer to it.
-				vertexptr->ptr[i] = (Node<square>*)vertexID[x1];
+		//Iterate through the possible moves
+		for (i = 0; i < 8; i++) {
+			newx = r + moves[i].x;
+			newy = c + moves[i].y;
+
+			if (newx >= 0 && newy >= 0 && newx <= 7 && newy <= 7) {
+				square s1(newx, newy);
+				int x1 = is_in_graph(s1, vertexID);
+
+				//std::cout << x1 << std::endl;
+
+				if (x1 >= 0) {
+					// If the square is already in the graph, add a pointer to it.
+					vertexptr->ptr[i] = (Node<square>*)vertexID[x1];
+				}
+				else {
+					// If not, set up a new node for the square
+					vertexptr->ptr[i] = new Node<square>;
+					vertexptr->ptr[i]->value = s1;
+					vertexptr->ptr[i]->num_edges = 0;
+					vertexptr->ptr[i]->ID = vertexID.size();
+					vertexID.push_back(vertexptr->ptr[i]);
+				}
+				vertexptr->num_edges++;
 			}
-			else {
-				// If not, set up a new node for the square
-				vertexptr->ptr[i] = new Node<square>;
-				vertexptr->ptr[i]->value = s1;
-				vertexptr->ptr[i]->num_edges = 0;
-				vertexptr->ptr[i]->ID = vertexID.size();
-				vertexID.push_back(vertexptr->ptr[i]);
-			}
-			vertexptr->num_edges++;
 		}
+		count++;
+		ptrID++;
+		vertexptr = (Node<square>*)vertexID[ptrID];
 	}
 
 	print_node(vertexptr);

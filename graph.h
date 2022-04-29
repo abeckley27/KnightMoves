@@ -26,7 +26,8 @@ bool square::operator==(const square& sq)
 }
 
 
-void print_node(Node<square>* n) {
+void print_node(Node<square>* n) 
+{
 	std::cout << "Node ID: " << n->ID << "\t(" << n->value.row << ", " << n->value.col << ")\n";
 	std::cout << n->num_edges << " possible moves from here\n";
 }
