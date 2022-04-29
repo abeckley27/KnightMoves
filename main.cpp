@@ -93,8 +93,8 @@ int main(int argc, char* argv[]) {
 				vertexptr->ptr[i] = new Node<square>;
 				vertexptr->ptr[i]->value = s1;
 				vertexptr->ptr[i]->num_edges = 0;
-				vertexID.push_back(vertexptr->ptr[i]);
 				vertexptr->ptr[i]->ID = vertexID.size();
+				vertexID.push_back(vertexptr->ptr[i]);
 			}
 			vertexptr->num_edges++;
 		}
