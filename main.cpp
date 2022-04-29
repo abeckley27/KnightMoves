@@ -3,6 +3,22 @@
 #include "pair.h"
 #include "graph.h"
 
+int is_in_graph(square& sq, const std::vector<void*>& IDlist) {
+	int output = -1;
+	Node<square>* nptr_i = NULL;
+	for (int i = 0; i < IDlist.size(); i++) {
+		nptr_i = (Node<square>*)IDlist[i];
+		//print_node(nptr_i);
+		//print_node(nodeptr);
+		//std::cout << (nptr_i->value == nodeptr->value) << std::endl;
+		//std::cin.get();
+		if (nptr_i->value == sq) {
+			output = i;
+		}
+	}
+	return output;
+}
+
 int main(int argc, char* argv[]) {
 
 	int i;
@@ -11,8 +27,11 @@ int main(int argc, char* argv[]) {
 	head.num_edges = 2;
 	head.ID = 0;
 
-	// A list of the addresses for all the nodes.
-	// The index is the ID for the node the address points to
+	/*
+	vertexID is a vector of the addresses for all the nodes in the graph, stored as void pointers.
+	The index of each element is the ID for the node the stored address points to.
+	I need a way to access every vertex in the graph, and this is easier than implementing a Hamiltonian path algorithm
+	*/
 	std::vector<void*> vertexID = {&head};
 	
 	for (i = 0; i < head.num_edges; i++) {
@@ -53,28 +72,43 @@ int main(int argc, char* argv[]) {
 	int r = vertexptr->value.row;
 	int c = vertexptr->value.col;
 	int newx, newy;
+
+	//Iterate through the possible moves
 	for (i = 0; i < 8; i++) {
 		newx = r + moves[i].x;
 		newy = c + moves[i].y;
+		
 		if (newx >= 0 && newy >= 0 && newx <= 7 && newy <= 7) { 
-			vertexptr->ptr[i] = new Node<square>;
-			vertexptr->ptr[i]->value = square(newx, newy);
-			vertexptr->ptr[i]->num_edges = 0;
-			vertexID.push_back(vertexptr->ptr[i]);
-			vertexptr->ptr[i]->ID = vertexID.size();
+			square s1(newx, newy);
+			int x1 = is_in_graph(s1, vertexID);
+
+			//std::cout << x1 << std::endl;
+			
+			if (x1 >= 0) {
+				// If the square is already in the graph, add a pointer to it.
+				vertexptr->ptr[i] = (Node<square>*)vertexID[x1];
+			}
+			else {
+				// If not, set up a new node for the square
+				vertexptr->ptr[i] = new Node<square>;
+				vertexptr->ptr[i]->value = s1;
+				vertexptr->ptr[i]->num_edges = 0;
+				vertexID.push_back(vertexptr->ptr[i]);
+				vertexptr->ptr[i]->ID = vertexID.size();
+			}
 			vertexptr->num_edges++;
 		}
 	}
 
 	print_node(vertexptr);
-	//print_graph(vertexptr);
-	/*
-	prints the whole graph
+	std::cout << "----------\n";
+	
+	//prints the whole graph
 	for (i = 0; i < vertexID.size(); i++) { 
 		std::cout << vertexID[i] << '\t';
 		print_node( (Node<square>*)vertexID[i] );
 	}
-	*/
+	
 
 	return 0;
 }
