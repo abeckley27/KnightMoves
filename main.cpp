@@ -39,7 +39,6 @@ int main(int argc, char* argv[]) {
 
 	head.ptr[0]->value = square(1, 2);
 	head.ptr[1]->value = square(2, 1);
-	print_node(&head);
 
 	/*
 	For general purpose initialization, I need to check which moves are valid
@@ -68,8 +67,9 @@ int main(int argc, char* argv[]) {
 	vertexptr->num_edges = 0;
 
 	// temporary hack to prevent infinite loop
+	// nevermind, looks like this works just fine
 	int count = 0;
-	while (count < 2) {
+	while (count < 63) {
 		int r = vertexptr->value.row;
 		int c = vertexptr->value.col;
 		int newx, newy;
@@ -95,6 +95,7 @@ int main(int argc, char* argv[]) {
 					vertexptr->ptr[i]->value = s1;
 					vertexptr->ptr[i]->num_edges = 0;
 					vertexptr->ptr[i]->ID = vertexID.size();
+					vertexptr->ptr[i]->ptr[0] = vertexptr;
 					vertexID.push_back(vertexptr->ptr[i]);
 				}
 				vertexptr->num_edges++;
@@ -105,14 +106,19 @@ int main(int argc, char* argv[]) {
 		vertexptr = (Node<square>*)vertexID[ptrID];
 	}
 
-	print_node(vertexptr);
-	std::cout << "----------\n";
 	
 	//prints the whole graph
 	for (i = 0; i < vertexID.size(); i++) { 
 		std::cout << vertexID[i] << '\t';
 		print_node( (Node<square>*)vertexID[i] );
 	}
+
+	// TODO: check to make sure the graph was implemented correctly
+
+	//test
+	Node<square>* n0 = (Node<square>*)vertexID[0];
+	Node<square>* n20 = (Node<square>*)vertexID[20];
+	std::cout << distance(n0, n20) << std::endl;
 	
 
 	return 0;
